@@ -10,18 +10,18 @@ CREATE TABLE customers (
 );
 
 CREATE TABLE products (
-	id SERIAL PRIMARY KEY,
-	name VARCHAR(30),
-	description VARCHAR(255),
-	price REAL,
-	manufacture_code VARCHAR(100),
-	in_stock INTEGER
+	manufacture_code VARCHAR(100) PRIMARY KEY,
+	manufacture VARCHAR(50) NOT NULL,
+	name VARCHAR(30) NOT NULL,
+	description VARCHAR(255) NOT NULL,
+	price REAL NOT NULL,
+	in_stock INTEGER NOT NULL
 );
 
 
 CREATE TABLE orders (
 	customer_id INTEGER REFERENCES customers(id),
-	product_id INTEGER REFERENCES products(id),
+	product_id VARCHAR(100) REFERENCES products(manufacture_code),
 	PRIMARY KEY (customer_id, product_id)
 );
 
@@ -39,46 +39,56 @@ VALUES ('Ruth Msuya', 'ruth.msuya@inqababiotec.africa', '0689578596', 'Msewe, Ub
 
 --- THE PRODUCTS TABLE
 
-INSERT INTO products (name, description, price, manufacture_code, in_stock)
+INSERT INTO products (manufacture_code, manufacture, name, description, price, in_stock)
 VALUES (
+	'0030078500',
+	'Eppendorf',
 	'Double filtered tips',
 	'ep Dualfilter T.I.P.S.®, PCR clean and sterile, 0.1  10 µL S, 34 mm, dark gray, 960 tips (10 racks x 96 tips)',
 	350897.90,
-	'EP 0030078500', 78);
+	78);
 	
-INSERT INTO products (name, description, price, manufacture_code, in_stock)
+INSERT INTO products (manufacture_code, manufacture, name, description, price, in_stock)
 VALUES (
+	'10570.9.01',
+	'Treff Nolato',
 	'PCR strips of 8 tubes',
 	'PCR Strip of 8 flat Caps clear, 125/case, CleanRoom Pure®',
 	247856.90,
-	'TRE 10570.9.01', 12);
+	12);
 
-INSERT INTO products (name, description, price, manufacture_code, in_stock)
+INSERT INTO products (manufacture_code, manufacture, name, description, price, in_stock)
 VALUES (
+	'M0486S', 
+	'New England Biolabs',
 	'Quick-Load 2X Master Mix',
 	'OneTaq Quick-Load 2X Master Mix with Standard Buffer - 100 rxns; Storage Temp: -20°C; Shipping: Cool Packs; UN Code: 0000',
 	125804.90,
-	'NEB M0486S', 48);
+	48);
 	
-INSERT INTO products (name, description, price, manufacture_code, in_stock)
+INSERT INTO products (manufacture_code, manufacture, name, description, price, in_stock)
 VALUES (
+	'N0551S', 
+	'New England Biolabs',
 	'DNA ladder',
 	'Quick-Load Purple 100 bp DNA Ladder - 125 gel lanes; Storage Temp: 4°C; Shipping: Cool Packs; UN Code: 0000',
 	350897.90,
-	'NEB N0551S', 1);
+	1);
 
-INSERT INTO products (name, description, price, manufacture_code, in_stock)
+INSERT INTO products (manufacture_code, manufacture, name, description, price, in_stock)
 VALUES (
+	'B7024S', 
+	'New England Biolabs',
 	'GEL loading dye',
 	'Gel Loading Dye, Purple (6X) - 4,0 ml; Storage Temp: RT/4°C/-20°C; Shipping: Cool Packs; UN Code: 0000',
 	350897.90,
-	'NEB B7024S', 25);
+	25);
 	
 	
 --- THE ORDERS TABLE 
 
 INSERT INTO orders (customer_id, product_id)
-VALUES (2, 4), (2, 2), (2, 3), (2, 1) , (1, 3), (1, 5);
+VALUES (2, 'B7024S'), (2, 'N0551S'), (2, '0030078500'), (2, 'M0486S') , (1, '0030078500'), (1, '10570.9.01');
 	
 -- SELECT * FROM customers;
 -- SELECT * FROM products;
@@ -89,7 +99,10 @@ VALUES (2, 4), (2, 2), (2, 3), (2, 1) , (1, 3), (1, 5);
 WITH results AS (
 	SELECT customer_id, product_id, price
 	FROM orders, products
-	WHERE orders.product_id = products.id AND orders.customer_id = 2
+	WHERE orders.product_id = products.manufacture_code AND orders.customer_id = 2
 )
 SELECT SUM(price) AS order_total
 FROM results;
+
+
+
