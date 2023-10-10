@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS customers, products, orders;
+DROP TABLE IF EXISTS customers, products, orders, cart;
 
 
 CREATE TABLE customers (
@@ -23,6 +23,15 @@ CREATE TABLE orders (
 	customer_id INTEGER REFERENCES customers(id),
 	product_id VARCHAR(100) REFERENCES products(manufacture_code),
 	PRIMARY KEY (customer_id, product_id)
+);
+
+CREATE TABLE cart (
+	id VARCHAR(255),
+	customer_id INTEGER REFERENCES customers(id),
+	product_id VARCHAR(100) REFERENCES products(manufacture_code),
+	quantity INTEGER,
+	value REAL,
+	PRIMARY KEY(customer_id, product_id)
 );
 
 
@@ -89,6 +98,14 @@ VALUES (
 
 INSERT INTO orders (customer_id, product_id)
 VALUES (2, 'B7024S'), (2, 'N0551S'), (2, '0030078500'), (2, 'M0486S') , (1, '0030078500'), (1, '10570.9.01');
+
+
+--- THE CART TABLE
+INSERT INTO cart (id, customer_id, product_id, quantity, value) 
+VALUES 	('yfkbAKUUDBKJBkjuu783hk8qy', 2, 'B7024S', 7, 2456285.3), 
+		('yfkbAKUUDBKJBkjuu783hk8qy', 2, 'N0551S', 8, 2807183.2), 
+		('yfkbAKUUDBKJBkjuu783hk8qy', 2, '0030078500', 89, 31229913.1);
+	
 	
 -- SELECT * FROM customers;
 -- SELECT * FROM products;
@@ -96,13 +113,21 @@ VALUES (2, 'B7024S'), (2, 'N0551S'), (2, '0030078500'), (2, 'M0486S') , (1, '003
 
 
 -- Find total cost of order for customer 2
-WITH results AS (
-	SELECT customer_id, product_id, price
-	FROM orders, products
-	WHERE orders.product_id = products.manufacture_code AND orders.customer_id = 2
-)
-SELECT SUM(price) AS order_total
-FROM results;
+-- WITH results AS (
+-- 	SELECT customer_id, product_id, price
+-- 	FROM orders, products
+-- 	WHERE orders.product_id = products.manufacture_code AND orders.customer_id = 2
+-- )
+-- SELECT SUM(price) AS order_total
+-- FROM results;
 
+
+DELETE FROM cart
+WHERE product_id = '0030078500';
+
+-- INSERT INTO cart (id, customer_id, product_id, quantity, value) 
+-- VALUES ('yfkbAKUUDBKJBkjuu783hk8qy', 2, '0030078500', 89, 31229913.1);
+
+SELECT * FROM cart;
 
 
