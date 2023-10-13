@@ -21,16 +21,32 @@ router.param('code', async (req, res, next, code) => {
     }
 });
 
-
-
-// Get cart content 
-router.get('/', async (req, res) => {
+router.param('cartId', async (req, res, next, cartId) => {
     try {
-        const content = await pool.query("SELECT * FROM cart");
+        let cartIds = await pool.query("SELECT id FROM cart");
+        const codeInDb = cartIds.rows.find(cart => cart.id === cartId)["id"];
+
+        if (codeInDb) {
+            req.cart_id = codeInDb;
+            next();
+        } else {
+            next();
+        }
+    } catch (error) {
+        next();
+    }
+});
+
+
+// ROUTES
+// Get cart content 
+router.get('/:cartId', async (req, res) => {
+    try {
+        const content = await pool.query("SELECT * FROM cart WHERE cart.id = $1", [req.cart_id]);
         const result = content.rows;
 
         res.status(200).json(result);
-
+        
 
     } catch (error) {
         console.error(error.message);

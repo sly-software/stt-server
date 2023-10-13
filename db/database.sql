@@ -22,6 +22,7 @@ CREATE TABLE products (
 CREATE TABLE orders (
 	customer_id INTEGER REFERENCES customers(id),
 	product_id VARCHAR(100) REFERENCES products(manufacture_code),
+	quantity INTEGER,
 	PRIMARY KEY (customer_id, product_id)
 );
 
@@ -96,8 +97,13 @@ VALUES (
 	
 --- THE ORDERS TABLE 
 
-INSERT INTO orders (customer_id, product_id)
-VALUES (2, 'B7024S'), (2, 'N0551S'), (2, '0030078500'), (2, 'M0486S') , (1, '0030078500'), (1, '10570.9.01');
+INSERT INTO orders (customer_id, product_id, quantity)
+VALUES 	(2, 'B7024S', 7), 
+		(2, 'N0551S', 8), 
+		(2, '0030078500', 89), 
+		(2, 'M0486S', 6), 
+		(1, '0030078500', 4), 
+		(1, '10570.9.01', 1);
 
 
 --- THE CART TABLE
@@ -125,9 +131,15 @@ VALUES 	('yfkbAKUUDBKJBkjuu783hk8qy', 2, 'B7024S', 7, 2456285.3),
 DELETE FROM cart
 WHERE product_id = '0030078500';
 
--- INSERT INTO cart (id, customer_id, product_id, quantity, value) 
--- VALUES ('yfkbAKUUDBKJBkjuu783hk8qy', 2, '0030078500', 89, 31229913.1);
+INSERT INTO cart (id, customer_id, product_id, quantity, value) 
+VALUES ('yfkbAKUUDBKJBkjuu783hk8qy', 2, '0030078500', 89, 31229913.1);
 
-SELECT * FROM cart;
+SELECT customer_id, product_id, manufacture, name, description, price, quantity, in_stock
+FROM orders, products
+WHERE orders.product_id = products.manufacture_code
+ORDER BY customer_id ASC;
+
+TRUNCATE orders;
+SELECT * FROM orders;
 
 
