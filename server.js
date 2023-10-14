@@ -1,6 +1,7 @@
+require('dotenv').config()
 const express = require('express');
 const server = express();
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 4001;
 const products = require('./routes/products.js');
 const customers  = require('./routes/customers.js');
 const cart = require('./routes/cart.js');
@@ -12,14 +13,11 @@ server.use(express.json());   // parse incoming POST/PUT req.body as JSON
 
 
 /************ ROUTES ***************************/
-// Products end point
-server.use('/products', products);
-// User End-point
-server.use('/customers', customers);
-// Cart endpints
-server.use('/cart', cart);
-// Orders  End-point
-server.use('/orders', orders);
+server.use('/products', products); // Products end point
+server.use('/customers', customers);  // User End-point
+server.use('/cart', cart); // Cart end-point
+server.use('/orders', orders);  // Orders  End-point
+
 
 
 /******* SERVER LISTENING ********/
