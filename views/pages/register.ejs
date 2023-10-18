@@ -10,19 +10,37 @@
         </head>
         <body>
                 <section class="prompt">
-                        <h3>Ecomerce</h3>
+                        <h3>a b c d</h3>
                         <h1>Sign up</h1>
 
-                        <form action="/api/signup" method="post">
+                        <form action="/api/register" method="post">
                                 <section>
-                                        <label for="username">Username</label>
-                                        <input id="username" name="username" type="text" autocomplete="username" required>
+                                        <label for="name">Username</label>
+                                        <input id="name" name="name" type="text" autocomplete="name" required>
+                                </section>
+
+                                <section>
+                                        <label for="email">Email</label>
+                                        <input id="email" name="email" type="email" autocomplete="email" required>
+                                </section>
+                                <section>
+                                        <label for="phone">Phone</label>
+                                        <input id="phone" name="phone" type="phone" autocomplete="phone" required>
+                                </section>
+
+                                <section>
+                                        <label for="address">Address</label>
+                                        <input id="address" name="address" type="address" autocomplete="address" required>
                                 </section>
 
                                 <section>
                                         <label for="new-password">Password</label>
                                         <input id="new-password" name="password" type="password" autocomplete="new-password" required>
                                 </section>
+                                <!-- <section>
+                                        <label for="repeate-password">Repeat Password</label>
+                                        <input id="repeate-password" name="password_1" type="password" autocomplete="repeate-password" required>
+                                </section> -->
 
                                 <button type="submit">Sign up</button>
                         </form>

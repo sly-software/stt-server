@@ -40,38 +40,13 @@ router.get('/', async (req, res) => {
 
 // Register a new customer 
 router.post('/register', async (req, res) => {
-    try {
-        const { name, email, phone, address } = req.body;
-        const newUser = await pool.query("INSERT INTO customers (name, email, phone, address) VALUES ($1, $2, $3, $4) RETURNING *", [name, email, phone, address]);
 
-        res.json(newUser.rows);
 
-    } catch (error) {
-        console.error(error.message);
-        res.status(400).send("Error: 400\n Double check your details its either your duplicating information or some data are missing from your submission")
-    }
+    console.error(error.message);
+    res.status(400).send("Error: 400\n Double check your details its either your duplicating information or some data are missing from your submission")
 });
 
 
-// Update customer details 
-router.put('/:id', async (req, res) => {
-    try {
-        const { name, email, phone, address } = req.body;
-
-        if (name && email && phone && address && req.customer_id) {
-            await pool.query("UPDATE customers SET name = $1, email = $2, phone = $3, address = $4 WHERE customers.id = $5", [name, email, phone, address, req.customer_id]);
-            
-            res.status(202).send("Updated Successfully");
-        } else {
-            res.status(404).send("No Empty values allowed");
-        }
-        
-
-    } catch (error) {
-        console.log(error.message);
-        res.send("Invalid customer");
-    }
-})
 
 
 // Get a specific customer 

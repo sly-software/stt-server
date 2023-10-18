@@ -7,7 +7,7 @@ const cookieParser = require('cookie-parser');
 
 const initializePassport = require('../passport-config');
 const passport = require('passport');
-const { currentUsers } = require('../db/dbUtils');
+const { currentUsers, addNewUser } = require('../db/dbUtils');
 const session = require('express-session');
 let users = [];
 
@@ -45,7 +45,6 @@ router.get('/login', checkNotAuthenticated, (req, res) => {
 
 router.post('/login', checkNotAuthenticated, passport.authenticate('local', { failureRedirect: '/api/login'}), 
     (req, res) => {
-        // console.log(users);
         res.redirect('/api/products')
     }
 );
@@ -53,6 +52,17 @@ router.post('/login', checkNotAuthenticated, passport.authenticate('local', { fa
 
 router.get('/register', checkNotAuthenticated, (req, res) => {
     res.render('pages/register');
+});
+
+
+router.post('/register', async (req, res, next) => {
+    const newUser = await addNewUser(req.body);
+
+    if (newUser) {
+        res.redirect('/api/login')
+    } else {
+        res.redirect('/api/register')
+    }
 });
 
 
@@ -66,7 +76,6 @@ router.post('/logout', (req, res, next) => {
 
 function checkAuthenticated(req, res, next) {
     console.log(req.isAuthenticated())
-    // console.log(req)
     if(req.isAuthenticated()) {
         return next()
     }
@@ -85,3 +94,4 @@ function checkNotAuthenticated(req, res, next) {
 
 
 module.exports = router;
+
