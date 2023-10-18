@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>products</title>
+    </head>
+    <body>
+        <div class="main-container">
+            <div class="product-container">
+
+                <div>
+                    <table>
+                        <tr>
+                            <td>S/N</td>
+                            <td>Code</td>
+                            <td>Product Common Name</td>
+                            <td>Manufacture</td>
+                            <td>Detailed Description</td>
+                            <td>Price</td>
+                            <td>Quantity in Stock</td>
+                        </tr>
+                        <% products.map((product, idx) => { %>
+                            <tr>
+                                <td><%= ++idx %></td>
+                                <td><%= product.manufacture_code %></td>
+                                <td><%= product.name %></td>
+                                <td><%= product.manufacture %></td>
+                                <td><%= product.description %></td>
+                                <td><%= product.price %></td>
+                                <td><%= product.in_stock %></td>
+                            </tr>
+                        <% }) %>
+                    </table>
+                </div>
+
+
+
+                <form action="/api/logout" method="post">
+                    <button>Sign out</button>
+                </form>
+
+            </div>
+        </div>
+    </body>
+</html>

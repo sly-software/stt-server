@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const pool = require("../db/db.js");
+const { getAllProducts } = require('../db/dbUtils.js');
 
 
 /************ MIDDLEWARES  **********************/
@@ -25,17 +26,14 @@ router.param('code', async (req, res, next, code) => {
 /************ ROUTES ***************************/
 // Get all products from database
 router.get('/', async (req, res) => {
-    try {
-
-        // Query the db async
-        const products = await pool.query("SELECT * FROM products");
-        res.json(products.rows);
-
-    } catch (error) {
-        
-        console.error(error.message);
-        res.status(500).send("There must be an error! please retry later.");
+    const products = await getAllProducts();
+    
+    if(products) {
+        // res.status(200).json(products);
+        return res.render('pages/products', { products: products });
     }
+
+    return res.status(500).json({ msg: "No data found" });
 });
 
 

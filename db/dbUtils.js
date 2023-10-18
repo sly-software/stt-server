@@ -1,9 +1,20 @@
 const pool = require("./db");
-
+// let users;
 
 const currentUsers = async () => {
-    const response = await pool.query("SELECT * FROM customers");
-    return response.rows
+  const response = await pool.query("SELECT * FROM customers");
+  return response.rows
+};
+
+
+const getAllProducts = async () => {
+  try {
+    const response = await pool.query("SELECT * FROM products");
+    return response.rows;
+  } catch (error) {
+    console.error(error.message);
+    return []
+  }
 };
 
 
@@ -48,5 +59,6 @@ const users = [
 
 module.exports = {
     currentUsers,
+    getAllProducts,
     users
 };
