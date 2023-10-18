@@ -7,8 +7,9 @@ const cookieParser = require('cookie-parser');
 
 const initializePassport = require('../passport-config');
 const passport = require('passport');
-const { users } = require('../db/dbUtils');
+const { currentUsers } = require('../db/dbUtils');
 const session = require('express-session');
+let users = [];
 
 
 router.use(session({
@@ -20,12 +21,19 @@ router.use(cookieParser());
 router.use(passport.initialize());
 router.use(passport.session());
 
+
 initializePassport(passport, (email) => users.find(user => user.email === email), (id) => users.find(user => user.id === id));
 
 
-
-
 // PROTECTED ROUTES
+router.use('/login', async (req, res, next) => {
+    users = await currentUsers();
+    if (users) return next()
+
+    res.status(500).json({ msg: "Fatal error encountered" });
+});
+
+
 router.use('/products', checkAuthenticated,  products);
 router.use('/customers', checkAuthenticated,  customers);
 
@@ -37,6 +45,7 @@ router.get('/login', checkNotAuthenticated, (req, res) => {
 
 router.post('/login', checkNotAuthenticated, passport.authenticate('local', { failureRedirect: '/api/login'}), 
     (req, res) => {
+        // console.log(users);
         res.redirect('/api/products')
     }
 );
