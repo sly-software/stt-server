@@ -7,7 +7,12 @@ const cookieParser = require('cookie-parser');
 
 const initializePassport = require('../passport-config');
 const passport = require('passport');
-const { currentUsers, addNewUser, getUserByEmail, getUserById, passwordHash, users, } = require('../db/dbUtils');
+const { currentUsers, 
+        addNewUser, 
+        getUserByEmail, 
+        getUserById, 
+        users, 
+} = require('../db/dbUtils');
 const session = require('express-session');
 
 

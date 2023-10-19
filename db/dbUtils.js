@@ -15,7 +15,7 @@ const currentUsers = async () => {
 const addNewUser = async ({ name, email, phone, address, password }) => {
   try {
     // Generate hashed password
-    const hashedPassword = await passwordHash(password, 10);
+    const hashedPassword = await passwordHash(password, 11);
     const response = await pool.query("INSERT INTO customers (name, email, phone, address, password) VALUES ($1, $2, $3, $4, $5) RETURNING *", [name, email, phone, address, hashedPassword]);
     return response.rows
     
