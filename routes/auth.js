@@ -7,9 +7,8 @@ const cookieParser = require('cookie-parser');
 
 const initializePassport = require('../passport-config');
 const passport = require('passport');
-const { currentUsers, addNewUser } = require('../db/dbUtils');
+const { currentUsers, addNewUser, getUserByEmail, getUserById, passwordHash, users, } = require('../db/dbUtils');
 const session = require('express-session');
-let users = [];
 
 
 router.use(session({
@@ -22,18 +21,19 @@ router.use(passport.initialize());
 router.use(passport.session());
 
 
-initializePassport(passport, (email) => users.find(user => user.email === email), (id) => users.find(user => user.id === id));
+initializePassport(passport, getUserByEmail, getUserById);
 
 
-// PROTECTED ROUTES
+// MIDDLEWARE
 router.use('/login', async (req, res, next) => {
-    users = await currentUsers();
+    await currentUsers();
     if (users) return next()
 
     res.status(500).json({ msg: "Fatal error encountered" });
 });
 
 
+// PROTECTED ROUTES
 router.use('/products', checkAuthenticated,  products);
 router.use('/customers', checkAuthenticated,  customers);
 
@@ -94,4 +94,3 @@ function checkNotAuthenticated(req, res, next) {
 
 
 module.exports = router;
-

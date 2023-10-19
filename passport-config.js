@@ -1,12 +1,18 @@
+// Import Local stratergy for authorization
 const LocalStrategy = require('passport-local').Strategy;
+const { comparePasswords } = require('./db/dbUtils')
 
+
+// Initialize passport lib and user verification btn 
+// user submitted data and database records then serialize user session
 function initialize(passport, getUserByEmail, getUserById) {
-    const authenticateUser = (email, password, done) => {
+    const authenticateUser = async (email, password, done) => {
         const user = getUserByEmail(email);
+        const passwordMatch = await comparePasswords(password, user.password);
 
         try{
             if(user === null) return done(null, false, { message: "No User with that email" });
-            if(user.password != password) return done(null, false, { message: "password incorrect" });
+            if(!passwordMatch) return done(null, false, { message: "password incorrect" });
         } catch (err) {
             console.error(err.message);
         }
