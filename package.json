@@ -1,13 +1,13 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "",
+  "description": "stt server to serve frontend",
   "main": "server.js",
   "scripts": {
     "start": "nodemon server.js node "
   },
   "keywords": [],
-  "author": "",
+  "author": "Silvester Isasi",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
