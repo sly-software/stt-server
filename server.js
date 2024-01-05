@@ -11,7 +11,7 @@ app.use(cors());
 app.use(express.json()); // parse incoming POST/PUT req.body as JSON
 app.use(express.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
-app.set("views", "views");
+app.set("views", "src/views");
 app.use(express.static("public"));
 
 /************ ROUTES ***************************/

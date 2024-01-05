@@ -29,7 +29,7 @@ async function sendRegistrationForm(req, res, next) {
   } else {
     res.redirect("/api/register");
   }
-}
+} 
 
 /**
  *  AUTH: Render login page
@@ -123,7 +123,7 @@ function uploadFiles(req, res) {
  * Read from uploaded file and update database right away
  */
 function readContent() {
-  fs.createReadStream("./controller/uploads/gsl_updated.csv")
+  fs.createReadStream("./src/controller/uploads/gsl_updated.csv")
     .pipe(csvParser())
     .on("data", (data) => {
       updateCurrentStock(data);
