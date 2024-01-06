@@ -54,13 +54,19 @@ router.use("/newProducts", stockedChemicals);
 // Render login page
 router.get("/login", loginPage);
 // Submitt login credentials
+router.options("*", (req, res) => {
+  res.header("Access-Control-Allow-Origin", "https://stt-hfwz.onrender.com");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.end();
+});
+
 router.post(
   "/login",
   checkNotAuthenticated,
   passport.authenticate("local"), (req, res) => {
     res.header("Access-Control-Allow-Origin", "https://stt-hfwz.onrender.com");
     res.setHeader("Access-Control-Allow-Credentials", "true");
-    res.redirect("https://stt-hfwz.onrender.com");
+    res.send("success")
   }
 );
 // Render registration page
