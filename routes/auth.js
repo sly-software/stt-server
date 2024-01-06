@@ -57,9 +57,7 @@ router.get("/login", loginPage);
 router.post(
   "/login",
   checkNotAuthenticated,
-  passport.authenticate("local", {
-    successRedirect: "https://stt-hfwz.onrender.com",
-  })
+  passport.authenticate("local")
 );
 // Render registration page
 router.get("/register", checkNotAuthenticated, registrationForm);
