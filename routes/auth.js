@@ -58,9 +58,11 @@ router.get("/login", loginPage);
 router.post(
   "/login",
   checkNotAuthenticated,
-  passport.authenticate("local", {
-    successRedirect: "https://stt-hfwz.onrender.com",
-  })
+  passport.authenticate("local"), (req, res) => {
+    res.header("Access-Control-Allow-Origin", "http://localhost:5173");
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+    res.redirect("http://localhost:5173");
+  }
 );
 // Render registration page
 router.get("/register", checkNotAuthenticated, registrationForm);
