@@ -54,12 +54,6 @@ router.use("/newProducts", stockedChemicals);
 // Render login page
 router.get("/login", loginPage);
 // Submitt login credentials
-router.options("*", (req, res) => {
-  res.header("Access-Control-Allow-Origin", "https://stt-hfwz.onrender.com");
-  res.header("Access-Control-Allow-Origin", "https://stt-hfwz.onrender.com/api/stocked/products");
-  res.setHeader("Access-Control-Allow-Credentials", "true");
-  res.end();
-});
 
 router.post(
   "/login",
