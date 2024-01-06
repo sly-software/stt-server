@@ -123,7 +123,7 @@ function uploadFiles(req, res) {
  * Read from uploaded file and update database right away
  */
 function readContent() {
-  fs.createReadStream("./src/controller/uploads/gsl_updated.csv")
+  fs.createReadStream(__dirname + "/uploads/gsl_updated.csv")
     .pipe(csvParser())
     .on("data", (data) => {
       updateCurrentStock(data);
