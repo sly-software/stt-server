@@ -1,4 +1,4 @@
-// require("dotenv").config();
+require("dotenv").config();
 const express = require("express");
 const router = express.Router();
 const cookieParser = require("cookie-parser");
@@ -59,7 +59,7 @@ router.post(
   "/login",
   checkNotAuthenticated,
   passport.authenticate("local", {
-    successRedirect: "http://localhost:5173",
+    successRedirect: "https://stt-hfwz.onrender.com",
   })
 );
 // Render registration page
