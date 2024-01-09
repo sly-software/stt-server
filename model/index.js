@@ -58,7 +58,7 @@ const updateCurrentStock = async ({
 
   // Either add as a new product
   if (response.length === 0) {
-    addToCurrentProductsDb({
+    await addToCurrentProductsDb({
       product_code,
       product_description,
       qty_instock,
@@ -67,7 +67,7 @@ const updateCurrentStock = async ({
     });
   } else {
     // Or update the current information with new data
-    updateCurrentProductsDb({
+    await updateCurrentProductsDb({
       qty_instock,
       store_location,
       box_number,
