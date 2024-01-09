@@ -58,7 +58,7 @@ const updateCurrentStock = async ({
 
   // Either add as a new product
   if (response.length === 0) {
-    addToCurrentProductsDb({
+    await addToCurrentProductsDb({
       product_code,
       product_description,
       qty_instock,
@@ -67,7 +67,7 @@ const updateCurrentStock = async ({
     });
   } else {
     // Or update the current information with new data
-    updateCurrentProductsDb({
+    await updateCurrentProductsDb({
       qty_instock,
       store_location,
       box_number,
@@ -130,6 +130,15 @@ const truncateTable = async () => {
 }
 
 /**
+ * CURRENT_STOCK: Fast write to DB
+ */
+const fastUploadDataToDB = async (filePath) => {
+  // console.log(filePath);
+  await pool.query(`COPY current_stock FROM '${filePath}' CSV HEADER`);
+}
+
+
+/**
  * USER: search user by email
  */
 const getUserByEmail = (email) => users.find((user) => user.email === email);
@@ -177,5 +186,6 @@ module.exports = {
   comparePasswords,
   getCurrentStock,
   updateCurrentStock,
-  truncateTable
+  truncateTable,
+  fastUploadDataToDB
 };

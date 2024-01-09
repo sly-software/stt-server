@@ -9,7 +9,9 @@ const {
   users,
   currentUsers,
   truncateTable,
+  fastUploadDataToDB,
 } = require("../model/index");
+const path = require("path");
 
 /**
  *  AUTH: Render registration form
@@ -98,7 +100,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 /**
- * Read data from database and send them throu res object
+ * Read data from database and send them through res object
  */
 async function fetchData(req, res) {
   const results = await getCurrentStock();
@@ -113,10 +115,18 @@ async function fetchData(req, res) {
  * Collect file uploaded from frontend and read its content then save them
  * to this server folder
  */
-function uploadFiles(req, res) {
-  truncateTable(); // delete everything in the DB first
-  readContent(); // Add new records in there.
-  res.json({ message: "Successfully uploaded files" });
+async function uploadFiles(req, res) {
+  // readContent(); // Add new records in there.
+  // fastUploadDataToDB(__dirname + "\\uploads\\gsl_updated.csv");
+
+  try {
+    truncateTable(); // delete everything in the DB first 
+    await fastUploadDataToDB(path.join(__dirname,"uploads", "gsl_updated.csv")); 
+    res.json({ message: "Successfully uploaded files" });
+  } catch (error) {
+    console.error(error.message)
+  }
+  
 }
 
 /**
@@ -126,7 +136,7 @@ function readContent() {
   fs.createReadStream(__dirname + "/uploads/gsl_updated.csv")
     .pipe(csvParser())
     .on("data", (data) => {
-      updateCurrentStock(data);
+      setTimeout(async()=>{await updateCurrentStock(data)}, 1)
     })
     .on("end", () => {
       clearScreenDown;
