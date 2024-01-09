@@ -114,7 +114,7 @@ async function fetchData(req, res) {
  * to this server folder
  */
 async function uploadFiles(req, res) {
-  await truncateTable(); // delete everything in the DB first
+  // await truncateTable(); // delete everything in the DB first
   readContent(); // Add new records in there.
   res.json({ message: "Successfully uploaded files" });
 }
