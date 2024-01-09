@@ -98,7 +98,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 /**
- * Read data from database and send them throu res object
+ * Read data from database and send them through res object
  */
 async function fetchData(req, res) {
   const results = await getCurrentStock();
@@ -125,8 +125,8 @@ function uploadFiles(req, res) {
 function readContent() {
   fs.createReadStream(__dirname + "/uploads/gsl_updated.csv")
     .pipe(csvParser())
-    .on("data", async (data) => {
-      await updateCurrentStock(data);
+    .on("data", (data) => {
+      setTimeout(async()=>{await updateCurrentStock(data)}, 1)
     })
     .on("end", () => {
       clearScreenDown;
