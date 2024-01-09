@@ -113,8 +113,8 @@ async function fetchData(req, res) {
  * Collect file uploaded from frontend and read its content then save them
  * to this server folder
  */
-function uploadFiles(req, res) {
-  truncateTable(); // delete everything in the DB first
+async function uploadFiles(req, res) {
+  await truncateTable(); // delete everything in the DB first
   readContent(); // Add new records in there.
   res.json({ message: "Successfully uploaded files" });
 }
