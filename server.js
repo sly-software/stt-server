@@ -8,19 +8,8 @@ const auth = require("./routes/auth.js");
 
 /************ MIDDLEWARES ***********************/
 
-const whitelist = [
-  "http://localhost:5173",
-  "http://localhost:8080",
-  "https://stt-hfwz.onrender.com",
-];
-const corsOptions = {
-  origin: "*",
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  preflightContinue: false,
-  optionsSuccessStatus: 204,
-};
 
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(express.json()); // parse incoming POST/PUT req.body as JSON
 app.use(express.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
