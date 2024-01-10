@@ -137,6 +137,14 @@ const fastUploadDataToDB = async (filePath) => {
   await pool.query(`COPY current_stock FROM '${filePath}' CSV HEADER`);
 }
 
+/**
+ * CURRENT_STOCK: Get current_stock update logs data
+ */
+const currentStockLogs = async () => {
+  const logs = await pool.query('SELECT * FROM stt_logs');
+  return logs.rows[logs.rows.length - 1];
+}
+
 
 /**
  * USER: search user by email
@@ -187,5 +195,6 @@ module.exports = {
   getCurrentStock,
   updateCurrentStock,
   truncateTable,
-  fastUploadDataToDB
+  fastUploadDataToDB,
+  currentStockLogs,
 };

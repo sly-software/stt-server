@@ -10,6 +10,7 @@ const {
   currentUsers,
   truncateTable,
   fastUploadDataToDB,
+  currentStockLogs,
 } = require("../model/index");
 const path = require("path");
 
@@ -126,7 +127,19 @@ async function uploadFiles(req, res) {
   } catch (error) {
     console.error(error.message)
   }
-  
+}
+
+/**
+ * Get current_stock logs
+ */
+const getCurrentStockLogs = async (req, res) => {
+  try {
+    const logs = await currentStockLogs();
+    res.status(201).json(logs)
+  } catch (error) {
+    res.status(404).send();
+    console.error(error);
+  }
 }
 
 /**
@@ -154,4 +167,5 @@ module.exports = {
   checkAuthenticated,
   checkNotAuthenticated,
   getAllUsers,
+  getCurrentStockLogs,
 };

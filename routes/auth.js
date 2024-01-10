@@ -49,6 +49,7 @@ router.use("/stocked", stockedChemicals);
 // Route for adding a new product
 router.use("/newProducts", stockedChemicals);
 
+
 /**
  * ROUTES
  */
