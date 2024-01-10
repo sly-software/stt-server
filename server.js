@@ -24,5 +24,5 @@ app.use("/api", auth);
 
 /******* app LISTENING ********/
 app.listen(PORT, () => {
-  console.log(`App started on PORT: ${PORT8}`);
+  console.log(`App started on PORT: ${PORT}`);
 });
