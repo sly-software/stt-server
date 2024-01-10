@@ -1,4 +1,4 @@
-require("dotenv").config()
+
 const express = require("express");
 const app = express();
 const cors = require("cors");
@@ -18,7 +18,6 @@ app.use(express.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 app.set("views", "views");
 app.use(express.static(__dirname + "/public"));
-app.disable("X-Powered-By")
 
 /************ ROUTES ***************************/
 app.use("/api", auth);
