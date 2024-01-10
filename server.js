@@ -14,8 +14,7 @@ const whitelist = [
   "https://stt-hfwz.onrender.com",
 ];
 const corsOptions = {
-  origin: whitelist,
-  credentials: true
+  origin: "*",
 };
 
 app.use(cors(corsOptions));
@@ -26,7 +25,7 @@ app.set("views", "views");
 app.use(express.static(__dirname + "/public"));
 
 /************ ROUTES ***************************/
-app.options("*", cors());
+// app.options("*", cors());
 app.use("/api", auth);
 
 /******* app LISTENING ********/
