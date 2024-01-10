@@ -47,7 +47,8 @@ router.use("/login", getAllUsers);
 router.use("/stocked", stockedChemicals);
 // Route for adding a new product
 router.use("/newProducts", stockedChemicals);
-
+// Healthy check
+router.use("/my", stockedChemicals);
 
 /**
  * ROUTES
