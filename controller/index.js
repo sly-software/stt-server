@@ -9,7 +9,10 @@ const {
   users,
   currentUsers,
   truncateTable,
+  fastUploadDataToDB,
+  currentStockLogs,
 } = require("../model/index");
+const path = require("path");
 
 /**
  *  AUTH: Render registration form
@@ -114,9 +117,29 @@ async function fetchData(req, res) {
  * to this server folder
  */
 async function uploadFiles(req, res) {
-  // await truncateTable(); // delete everything in the DB first
-  readContent(); // Add new records in there.
-  res.json({ message: "Successfully uploaded files" });
+  // readContent(); // Add new records in there.
+  // fastUploadDataToDB(__dirname + "\\uploads\\gsl_updated.csv");
+
+  try {
+    truncateTable(); // delete everything in the DB first 
+    await fastUploadDataToDB(path.join(__dirname,"uploads", "gsl_updated.csv")); 
+    res.json({ message: "Successfully uploaded files" });
+  } catch (error) {
+    console.error(error.message)
+  }
+}
+
+/**
+ * Get current_stock logs
+ */
+const getCurrentStockLogs = async (req, res) => {
+  try {
+    const logs = await currentStockLogs();
+    res.status(201).json(logs)
+  } catch (error) {
+    res.status(404).send();
+    console.error(error);
+  }
 }
 
 /**
@@ -144,4 +167,5 @@ module.exports = {
   checkAuthenticated,
   checkNotAuthenticated,
   getAllUsers,
+  getCurrentStockLogs,
 };

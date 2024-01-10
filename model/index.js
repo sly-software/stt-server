@@ -130,6 +130,23 @@ const truncateTable = async () => {
 }
 
 /**
+ * CURRENT_STOCK: Fast write to DB
+ */
+const fastUploadDataToDB = async (filePath) => {
+  // console.log(filePath);
+  await pool.query(`COPY current_stock FROM '${filePath}' CSV HEADER`);
+}
+
+/**
+ * CURRENT_STOCK: Get current_stock update logs data
+ */
+const currentStockLogs = async () => {
+  const logs = await pool.query('SELECT * FROM stt_logs');
+  return logs.rows[logs.rows.length - 1];
+}
+
+
+/**
  * USER: search user by email
  */
 const getUserByEmail = (email) => users.find((user) => user.email === email);
@@ -177,5 +194,7 @@ module.exports = {
   comparePasswords,
   getCurrentStock,
   updateCurrentStock,
-  truncateTable
+  truncateTable,
+  fastUploadDataToDB,
+  currentStockLogs,
 };
