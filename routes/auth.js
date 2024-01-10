@@ -60,8 +60,6 @@ router.post(
   "/login",
   checkNotAuthenticated,
   passport.authenticate("local"), (req, res) => {
-    res.header("Access-Control-Allow-Origin", "https://stt-hfwz.onrender.com");
-    res.setHeader("Access-Control-Allow-Credentials", "true");
     res.send("success")
   }
 );
