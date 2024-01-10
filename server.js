@@ -10,7 +10,8 @@ const auth = require("./routes/auth.js");
 
 
 app.use(cors({
-  origin: ["http://localhost:5172", "http://localhost:5173", "https://stt-hfwz.onrender.com"]
+  origin: ["http://localhost:5172", "http://localhost:5173", "https://stt-hfwz.onrender.com"],
+  credentials: true
 }));
 app.use(express.json()); // parse incoming POST/PUT req.body as JSON
 app.use(express.urlencoded({ extended: true }));
@@ -23,5 +24,5 @@ app.use("/api", auth);
 
 /******* app LISTENING ********/
 app.listen(PORT, () => {
-  console.log(`App started on PORT: ${PORT}`);
+  console.log(`App started on PORT: ${PORT8}`);
 });
