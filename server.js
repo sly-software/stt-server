@@ -21,7 +21,7 @@ app.use(express.static(__dirname + "/public"));
 
 /************ ROUTES ***************************/
 app.use("/api", auth);
-app.get("healthCheck", (req, res) => {
+app.get("/healthCheck", (req, res) => {
   res.json({ message: "Healthy" })
 })
 
