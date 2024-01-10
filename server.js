@@ -12,6 +12,11 @@ const auth = require("./routes/auth.js");
 app.use(cors({
   origin: "*"
 }));
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+})
 app.use(express.json()); // parse incoming POST/PUT req.body as JSON
 app.use(express.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
