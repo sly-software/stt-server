@@ -137,7 +137,7 @@ const getCurrentStockLogs = async (req, res) => {
     const logs = await currentStockLogs();
     res.status(201).json(logs)
   } catch (error) {
-    res.status(404).send();
+    res.status(404).json({});
     console.error(error);
   }
 }
