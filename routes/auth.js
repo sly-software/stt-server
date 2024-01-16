@@ -51,6 +51,10 @@ router.use("/stocked", stockedChemicals);
 router.use("/newProducts", stockedChemicals);
 // Route for getting/adding/updating/deleting offers 
 router.use("/current", offers);
+// Route for health check
+router.use("/health-check", (req, res) =>
+  res.json({ message: "I am healthy" })
+);
 
 
 /**
