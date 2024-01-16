@@ -48,9 +48,12 @@ router.use("/login", getAllUsers);
 router.use("/stocked", stockedChemicals);
 // Route for adding a new product
 router.use("/newProducts", stockedChemicals);
-// Route for getting/adding/updating/deleting offers 
+// Route for getting/adding/updating/deleting offers
 router.use("/current", offers);
-
+// Health check route
+router.use("/health-check", (req, res) =>
+  res.json({ message: "I am healthy" })
+);
 
 /**
  * ROUTES
@@ -62,8 +65,9 @@ router.get("/login", loginPage);
 router.post(
   "/login",
   checkNotAuthenticated,
-  passport.authenticate("local"), (req, res) => {
-    res.send("success")
+  passport.authenticate("local"),
+  (req, res) => {
+    res.send("success");
   }
 );
 // Render registration page
