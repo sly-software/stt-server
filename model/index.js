@@ -126,8 +126,8 @@ const addToCurrentProductsDb = async ({
  * CURRENT_STOCK: utils to updateCurrentStock
  */
 const truncateTable = async () => {
-  await pool.query("TRUNCATE TABLE current_stock")
-}
+  await pool.query("TRUNCATE TABLE current_stock");
+};
 
 /**
  * CURRENT_STOCK: Fast write to DB
@@ -135,16 +135,15 @@ const truncateTable = async () => {
 const fastUploadDataToDB = async (filePath) => {
   // console.log(filePath);
   await pool.query(`COPY current_stock FROM '${filePath}' CSV HEADER`);
-}
+};
 
 /**
  * CURRENT_STOCK: Get current_stock update logs data
  */
 const currentStockLogs = async () => {
-  const logs = await pool.query('SELECT * FROM stt_logs');
+  const logs = await pool.query("SELECT * FROM stt_logs");
   return logs.rows[logs.rows.length - 1];
-}
-
+};
 
 /**
  * USER: search user by email
@@ -184,6 +183,53 @@ async function comparePasswords(password, hash) {
   return false;
 }
 
+/**
+ * OFFERS TABLE: FETCH DATA
+ */
+const getDBOffers = async () => {
+  try {
+    const result = await pool.query("SELECT * FROM offers");
+    return result.rows;
+    // console.log(result.rows)
+  } catch (error) {
+    // return error.message;
+    console.error(error.message);
+  }
+};
+
+/**
+ * OFFERS TABLE: ADD
+ */
+const addDBOffer = async ({
+  product_code,
+  product_description,
+  discount,
+  discount_condition,
+  validity,
+  image_link,
+  product_link,
+}) => {
+  try {
+    const response = await pool.query(
+      "INSERT INTO offers(product_code, product_description, discount, discount_condition, validity, image_link, product_link)  VALUES ( $1, $2, $3, $4, $5, $6, $7) RETURNING *",
+      [
+        product_code,
+        product_description,
+        Number(discount),
+        discount_condition,
+        new Date(validity),
+        image_link,
+        product_link,
+      ]
+    );
+
+    return response.rows;
+  } catch (error) {
+    console.error(error.message);
+    return { message: "There was an error try again latter" };
+  }
+};
+
 module.exports = {
   currentUsers,
   addNewUser,
@@ -197,4 +243,6 @@ module.exports = {
   truncateTable,
   fastUploadDataToDB,
   currentStockLogs,
+  getDBOffers,
+  addDBOffer,
 };

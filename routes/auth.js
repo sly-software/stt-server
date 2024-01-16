@@ -8,6 +8,7 @@ const { getUserByEmail, getUserById } = require("../model/index");
 const session = require("express-session");
 const pgSession = require("connect-pg-simple")(session);
 const stockedChemicals = require("./stockedChemicals");
+const offers = require("./offers");
 const {
   registrationForm,
   sendRegistrationForm,
@@ -48,6 +49,8 @@ router.use("/login", getAllUsers);
 router.use("/stocked", stockedChemicals);
 // Route for adding a new product
 router.use("/newProducts", stockedChemicals);
+// Route for getting/adding/updating/deleting offers 
+router.use("/current", offers);
 
 
 /**
