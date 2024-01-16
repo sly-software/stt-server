@@ -11,8 +11,11 @@ const {
   truncateTable,
   fastUploadDataToDB,
   currentStockLogs,
+  getDBOffers,
+  addDBOffer,
 } = require("../model/index");
 const path = require("path");
+const { resolveSoa } = require("dns");
 
 /**
  *  AUTH: Render registration form
@@ -32,7 +35,7 @@ async function sendRegistrationForm(req, res, next) {
   } else {
     res.redirect("/api/register");
   }
-} 
+}
 
 /**
  *  AUTH: Render login page
@@ -121,11 +124,13 @@ async function uploadFiles(req, res) {
   // fastUploadDataToDB(__dirname + "\\uploads\\gsl_updated.csv");
 
   try {
-    truncateTable(); // delete everything in the DB first 
-    await fastUploadDataToDB(path.join(__dirname,"uploads", "gsl_updated.csv")); 
+    truncateTable(); // delete everything in the DB first
+    await fastUploadDataToDB(
+      path.join(__dirname, "uploads", "gsl_updated.csv")
+    );
     res.json({ message: "Successfully uploaded files" });
   } catch (error) {
-    console.error(error.message)
+    console.error(error.message);
   }
 }
 
@@ -135,12 +140,12 @@ async function uploadFiles(req, res) {
 const getCurrentStockLogs = async (req, res) => {
   try {
     const logs = await currentStockLogs();
-    res.status(201).json(logs)
+    res.status(201).json(logs);
   } catch (error) {
     res.status(404).json({});
     console.error(error);
   }
-}
+};
 
 /**
  * Read from uploaded file and update database right away
@@ -149,11 +154,39 @@ function readContent() {
   fs.createReadStream(__dirname + "/uploads/gsl_updated.csv")
     .pipe(csvParser())
     .on("data", (data) => {
-      setTimeout(async()=>{await updateCurrentStock(data)}, 1)
+      setTimeout(async () => {
+        await updateCurrentStock(data);
+      }, 1);
     })
     .on("end", () => {
       clearScreenDown;
     });
+}
+
+/**
+ * GET all current offers
+ */
+async function getOffers(req, res) {
+  try {
+    const offers = await getDBOffers();
+    // console.log(offers)
+    res.json(offers);
+  } catch (error) {
+    res.status(500).json({ message: "No offers at the momment" });
+    console.error(error);
+  }
+}
+
+/**
+ * ADD new offer to Offer table
+ */
+async function addNewOfferToDB(req, res) {
+  try {
+    const response = await addDBOffer(req.body);
+    res.json(response);
+  } catch (error) {
+    res.status(500).json({ message: "There was an error" });
+  }
 }
 
 module.exports = {
@@ -168,4 +201,6 @@ module.exports = {
   checkNotAuthenticated,
   getAllUsers,
   getCurrentStockLogs,
+  getOffers,
+  addNewOfferToDB,
 };
