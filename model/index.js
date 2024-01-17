@@ -222,10 +222,10 @@ const addDBOffer = async ({
         product_link,
       ]
     );
-
+    // console.log(response)
     return response.rows;
   } catch (error) {
-    console.error(error.message);
+    console.error(error);
     return { message: "There was an error try again latter" };
   }
 };
