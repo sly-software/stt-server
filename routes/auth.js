@@ -1,7 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const router = express.Router();
-const cookieParser = require("cookie-parser");
+
 const initializePassport = require("../passport-config");
 const passport = require("passport");
 const { getUserByEmail, getUserById } = require("../model/index");
@@ -9,6 +9,7 @@ const session = require("express-session");
 const pgSession = require("connect-pg-simple")(session);
 const stockedChemicals = require("./stockedChemicals");
 const offers = require("./offers");
+const DNservices = require("./deliveryNotes");
 const {
   registrationForm,
   sendRegistrationForm,
@@ -16,7 +17,6 @@ const {
   logoutUser,
   checkAuthenticated,
   checkNotAuthenticated,
-  getAllUsers,
 } = require("../controller");
 const pool = require("../model/db");
 
@@ -32,50 +32,54 @@ router.use(
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 5000 },
+    cookie: { maxAge: parseInt(process.env.MAX_AGE), httpOnly: true },
   })
 );
-// Cookie perser figuration
-router.use(cookieParser());
+
 // Passport.js initialization
 router.use(passport.initialize());
 // Passport.session middleware
 router.use(passport.session());
 // Initialize passport.js for the app
 initializePassport(passport, getUserByEmail, getUserById);
-// Fetch users from on login route requested
-router.use("/login", getAllUsers);
+
+router.use((req, res, next) => {
+  // console.log(`If authenticated req.user will have my details as follows: `);
+  // console.log(req.user);
+  // console.log(req.session.passport);
+  next();
+});
+
+router.get("/user", (req, res) => {
+  res.json({ user: req.user ? req.user.name : "IBTZ" });
+});
+
 // Routes for fetching all chemicals available in stock
 router.use("/stocked", stockedChemicals);
 // Route for adding a new product
-router.use("/newProducts", stockedChemicals);
-// Route for getting/adding/updating/deleting offers 
-router.use("/current", offers);
+router.use("/newProducts", checkAuthenticated, stockedChemicals);
+// Route for getting/adding/updating/deleting offers
+router.use("/current", checkAuthenticated, offers);
+/********************************************** */
+router.use("/delivery", checkAuthenticated, DNservices);
+/********************************************** */
 // Route for health check
 router.use("/health-check", (req, res) =>
   res.json({ message: "I am healthy" })
 );
 
-
 /**
  * ROUTES
  */
-// Render login page
-router.get("/login", loginPage);
-// Submitt login credentials
-router.post(
-  "/login",
-  checkNotAuthenticated,
-  passport.authenticate("local"), (req, res) => {
-    res.header("Access-Control-Allow-Origin", "http://localhost:5173");
-    res.setHeader("Access-Control-Allow-Credentials", "true");
-    res.redirect("http://localhost:5173");
-  }
-);
+// Authenticate User
+router.post("/login", passport.authenticate("local"), (req, res) => {
+  // console.log(req.user)
+  res.json({ name: req.user.name });
+});
 // Render registration page
 router.get("/register", checkNotAuthenticated, registrationForm);
 // Register new user
-router.post("/register", sendRegistrationForm);
+// router.post("/register", sendRegistrationForm);
 // Logout the current user
 router.post("/logout", logoutUser);
 
