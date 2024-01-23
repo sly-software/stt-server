@@ -153,7 +153,12 @@ const getUserByEmail = (email) => users.find((user) => user.email === email);
 /**
  * USER: search user by id
  */
-const getUserById = (id) => users.find((user) => user.id === id);
+const getUserById = (id) => {
+  const user = users.find((user) => user.id === id);
+  // console.log(users)
+
+  return user;
+};
 
 /**
  * PASSWORD: Hashing password
@@ -230,6 +235,42 @@ const addDBOffer = async ({
   }
 };
 
+/**************************************** */
+/**************************************** */
+/**************************************** */
+/**************************************** */
+/**************************************** */
+/********** SECTION 05 : START  ********* */
+
+/**
+ * DN table
+ */
+const saveDNToDB = async ({
+    fileId,
+    filename,
+    uploaddate,
+    viewLink,
+    downloadLink,
+  }) => {
+  const saveToDB = await pool.query(
+    "INSERT INTO delivery_notes (fileId, filename, uploaddate, viewLink, downloadLink) VALUES($1, $2, $3, $4, $5) RETURNING*",
+    [fileId, filename, uploaddate, viewLink, downloadLink]
+  );
+
+  return saveToDB;
+};
+
+const getUploadedDN = async () => {
+  const response = await pool.query("SELECT * FROM delivery_notes");
+  return response.rows;
+};
+
+/**********  SECTION 05 : END   ********* */
+/**************************************** */
+/**************************************** */
+/**************************************** */
+/**************************************** */
+
 module.exports = {
   currentUsers,
   addNewUser,
@@ -245,4 +286,6 @@ module.exports = {
   currentStockLogs,
   getDBOffers,
   addDBOffer,
+  saveDNToDB,
+  getUploadedDN,
 };

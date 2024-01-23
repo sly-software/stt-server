@@ -1,3 +1,5 @@
+const pool = require("../model/db");
+
 const multer = require("multer");
 const fs = require("fs");
 const csvParser = require("csv-parser");
@@ -13,9 +15,11 @@ const {
   currentStockLogs,
   getDBOffers,
   addDBOffer,
+  saveDNToDB,
 } = require("../model/index");
 const path = require("path");
 const { resolveSoa } = require("dns");
+const { google } = require("googleapis");
 
 /**
  *  AUTH: Render registration form
@@ -50,8 +54,7 @@ function loginPage(req, res) {
 function logoutUser(req, res, next) {
   req.logOut((err) => {
     if (err) return next(err);
-    res.redirect("/api/login");
-    res.send();
+    res.send("Successfully loggedout");
   });
 }
 
@@ -59,11 +62,11 @@ function logoutUser(req, res, next) {
  *  AUTH: Check if authenticated
  */
 function checkAuthenticated(req, res, next) {
-  console.log(req.isAuthenticated());
+  console.log("is user authenticated: " + req.isAuthenticated());
   if (req.isAuthenticated()) {
     return next();
   }
-  res.redirect("/api/login");
+  res.json({ message: "Unauthorized" });
 }
 
 /**
@@ -93,7 +96,7 @@ const storage = multer.diskStorage({
     callback(null, __dirname + "/uploads");
   },
   filename: function (req, file, callback) {
-    const filename = "gsl_updated.csv";
+    const filename = file.originalname;
     callback(null, filename);
   },
 });
@@ -163,11 +166,20 @@ function readContent() {
     });
 }
 
+/**************************************** */
+/**************************************** */
+/**************************************** */
+/**************************************** */
+/**************************************** */
+/********** SECTION 04 : START  ********* */
+
 /**
  * GET all current offers
  */
 async function getOffers(req, res) {
   try {
+    // console.log(req.user)
+    // console.log(req.session)
     const offers = await getDBOffers();
     // console.log(offers)
     res.json(offers);
@@ -189,6 +201,118 @@ async function addNewOfferToDB(req, res) {
   }
 }
 
+/**************************************** */
+/**************************************** */
+/**************************************** */
+/**************************************** */
+/**************************************** */
+/********** SECTION 05 : START  ********* */
+
+const DriveAuth = () => {
+  const auth = new google.auth.GoogleAuth({
+    keyFile: `${__dirname}/sensitiveinformation.json`,
+    scopes: "https://www.googleapis.com/auth/drive",
+  });
+  return auth;
+};
+
+const uploadToGoogleDrive = async (file) => {
+  const fileData = {};
+  // const auth = getAuth();
+  const driveService = google.drive({ version: "v3", auth: DriveAuth() });
+
+  const fileMetadata = {
+    name: file.originalname,
+    parents: [process.env.DN_FOLDER_IN_GDRV],
+  };
+
+  const media = {
+    mimeType: file.mimeType,
+    body: fs.createReadStream(file.path),
+  };
+
+  // Upload and return ID
+  const response = await driveService.files.create({
+    requestBody: fileMetadata,
+    media: media,
+    fields: "id",
+  });
+
+  // Populate fileData OBJ**********************
+  fileData.fileId = response.data.id;
+  fileData.filename = file.originalname;
+  fileData.uploaddate = new Date();
+
+  // Upload and return view and download link
+  const result = await driveService.files.get({
+    fileId: fileData.fileId,
+    fields: "webViewLink, webContentLink",
+  });
+
+  // Populate fileData OBJ**********************
+  fileData.downloadLink = result.data.webContentLink;
+  fileData.viewLink = result.data.webViewLink;
+
+  // console.log(fileData);
+
+  setTimeout(()=>{
+    deleteFileInServer(file)
+  }, 1000 * 60 * 1)
+
+  return fileData;
+};
+
+function deleteFileInServer(file) {
+  const filename = file.originalname;
+  fs.unlink(file.path, (err) => {
+    if (err) console.log(err);
+    console.log(`File with name ${filename} deleted.`);
+  });
+};
+
+const deleteFileInGDrive = async (id) => {
+  try {
+    const driveService = google.drive({ version: "v3", auth: DriveAuth() });
+    const response = await driveService.files.delete({
+      fileId: id,
+    });
+
+    console.log(response.data, response.status);
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+const getAllFilesInGD = async () => {
+  try {
+    const driveService = google.drive({ version: "v3", auth: DriveAuth() });
+    const response = await driveService.files.list({
+      fields: "files(name, id, date)",
+    });
+
+    const files = response.data.files;
+    return files;
+  } catch (error) {
+    console.error("Error listing files: ", error.message);
+  }
+};
+
+//Upload function to DB
+const uploadDNmetada = async (req) => {
+  const googleDriveServices = await uploadToGoogleDrive(req.files[0]);
+  const saveToDB = await saveDNToDB(googleDriveServices);
+
+  console.log(saveToDB.rows[0]);
+
+  return saveToDB.rows[0];
+};
+
+/**********  SECTION 05 : END   ********* */
+/**************************************** */
+/**************************************** */
+/**************************************** */
+/**************************************** */
+
 module.exports = {
   uploadFiles,
   fetchData,
@@ -203,4 +327,7 @@ module.exports = {
   getCurrentStockLogs,
   getOffers,
   addNewOfferToDB,
+  deleteFileInGDrive,
+  uploadDNmetada,
+  getAllFilesInGD,
 };

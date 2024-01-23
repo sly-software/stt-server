@@ -25,10 +25,11 @@ function initialize(passport, getUserByEmail, getUserById) {
     process.nextTick(function () {
       done(null, user.id);
     });
-  });
+  }); 
 
   passport.deserializeUser(function (id, done) {
     process.nextTick(function () {
+      // console.log(getUserById(id))
       done(null, getUserById(id));
     });
   });
