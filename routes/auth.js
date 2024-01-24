@@ -23,12 +23,14 @@ const pool = require("../model/db");
  * MIDDLEWARES
  */
 // Session configuration
+
 router.use(
   session({
     store: new pgSession({
       pool: pool,
     }),
     secret: process.env.SESSION_SECRET,
+    name:"stt",
     resave: false,
     saveUninitialized: true,
     cookie: {
