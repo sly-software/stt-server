@@ -210,7 +210,7 @@ async function addNewOfferToDB(req, res) {
 
 const DriveAuth = () => {
   const auth = new google.auth.GoogleAuth({
-    keyFile: `${__dirname}/sensitiveinformation.json`,
+    keyFile: `/etc/secrets/sensitiveinformation.json`,
     scopes: "https://www.googleapis.com/auth/drive",
   });
   return auth;
