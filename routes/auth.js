@@ -34,8 +34,6 @@ router.use(
     cookie: {
       maxAge: parseInt(process.env.MAX_AGE),
       httpOnly: true,
-      secure: true,
-      sameSite: "none",
     },
   })
 );
