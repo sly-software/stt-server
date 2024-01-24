@@ -15,7 +15,8 @@ const corsOptions = {
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS' 
 }
 // Cookie perser figuration
-app.use(cookieParser());
+// app.use(cookieParser());
+app.set("trust proxy", true);
 app.use(cors(corsOptions));
 app.use(express.json()); // parse incoming POST/PUT req.body as JSON
 app.use(express.urlencoded({ extended: false }));
