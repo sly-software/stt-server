@@ -30,7 +30,7 @@ router.use(
     }),
     secret: process.env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,
     cookie: {
       maxAge: parseInt(process.env.MAX_AGE),
       httpOnly: true,
