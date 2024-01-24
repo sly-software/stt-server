@@ -35,7 +35,7 @@ router.use(
       maxAge: parseInt(process.env.MAX_AGE),
       httpOnly: true,
       sameSite: "none",
-      secure: "auto"
+      secure: true
     },
   })
 );
