@@ -81,7 +81,7 @@ router.post("/login", passport.authenticate("local"), (req, res) => {
 // Render registration page
 router.get("/register", checkNotAuthenticated, registrationForm);
 // Register new user
-// router.post("/register", sendRegistrationForm);
+router.post("/register", sendRegistrationForm);
 // Logout the current user
 router.post("/logout", logoutUser);
 
