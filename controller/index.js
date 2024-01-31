@@ -62,11 +62,13 @@ function logoutUser(req, res, next) {
  *  AUTH: Check if authenticated
  */
 function checkAuthenticated(req, res, next) {
-  console.log("is user authenticated: " + req.isAuthenticated());
+  // console.log("is user authenticated: " + req.isAuthenticated());
   if (req.isAuthenticated()) {
+    console.log("is user authenticated: " + req.isAuthenticated());
     return next();
   }
-  res.json({ message: "Unauthorized" });
+  console.log("is user authenticated: " + req.isAuthenticated());
+  return res.json({ message: "Unauthorized" });
 }
 
 /**
@@ -257,7 +259,7 @@ const uploadToGoogleDrive = async (file) => {
 
   setTimeout(()=>{
     deleteFileInServer(file)
-  }, 1000 * 60 * 1)
+  }, 1000 * 60 * 0.5)
 
   return fileData;
 };
@@ -328,6 +330,7 @@ module.exports = {
   getOffers,
   addNewOfferToDB,
   deleteFileInGDrive,
+  deleteFileInServer,
   uploadDNmetada,
   getAllFilesInGD,
 };
