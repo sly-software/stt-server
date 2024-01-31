@@ -31,7 +31,7 @@ router.use(
       pool: pool,
     }),
     secret: process.env.SESSION_SECRET,
-    name:"stt",
+    name: "stt",
     resave: false,
     saveUninitialized: true,
     cookie: { maxAge: parseInt(process.env.MAX_AGE), httpOnly: true },
@@ -74,10 +74,14 @@ router.use("/health-check", (req, res) =>
  * ROUTES
  */
 // Authenticate User
-router.post("/login", passport.authenticate("local"), (req, res) => {
-  // console.log(req.user)
-  res.json({ name: req.user.name });
-});
+router.post(
+  "/login",
+  passport.authenticate("local"),
+  (req, res) => {
+    console.log(req.user);
+    res.json({ name: req.user.name });
+  }
+);
 // Render registration page
 router.get("/register", checkNotAuthenticated, registrationForm);
 // Register new user

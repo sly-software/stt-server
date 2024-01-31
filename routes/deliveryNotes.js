@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { uploadDNmetada, upload, getAllFilesInGD } = require("../controller");
+const { uploadDNmetada, upload, getAllFilesInGD, deleteFileInServer } = require("../controller");
 const { getUploadedDN } = require("../model");
 
 router.post("/notes", upload.any("files"), async (req, res) => {
@@ -19,6 +19,7 @@ router.post("/notes", upload.any("files"), async (req, res) => {
       res.json(response);
     } else {
       res.json({ message: "Record Exists!!" });
+      deleteFileInServer(req.files[0]);
     }
   } catch (error) {
     console.log(error.message);
