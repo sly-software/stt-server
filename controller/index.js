@@ -257,9 +257,9 @@ const uploadToGoogleDrive = async (file) => {
 
   // console.log(fileData);
 
-  setTimeout(()=>{
-    deleteFileInServer(file)
-  }, 1000 * 60 * 0.5)
+  setTimeout(() => {
+    deleteFileInServer(file);
+  }, 1000 * 60 * 0.5);
 
   return fileData;
 };
@@ -270,7 +270,7 @@ function deleteFileInServer(file) {
     if (err) console.log(err);
     console.log(`File with name ${filename} deleted.`);
   });
-};
+}
 
 const deleteFileInGDrive = async (id) => {
   try {
