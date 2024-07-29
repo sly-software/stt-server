@@ -6,7 +6,7 @@ class GoogleAuthorityCode {
     this.fileData = {};
 
     this.auth = new google.auth.GoogleAuth({
-      keyFile: `${__dirname}/sensitiveinformation.json`,
+      keyFile: `/etc/secrets/sensitiveinformation.json`,
       scopes: "https://www.googleapis.com/auth/drive",
     });
 
