@@ -1,5 +1,26 @@
 const { GoogleAuthorityCode } = require("./google");
-const { saveDNToDB } = require("../model");
+const { saveDNToDB, getUploadedDN } = require("../model");
+const { getAllFilesInGD } = require("../controller");
+
+function compare(filesNDb, filesNGd) {
+  const missingRecs = [];
+
+  if (filesNDb.length > filesNGd.length) {
+    console.log("There is more files in database than in google drive");
+    // call a function to equilibrate records accordingly
+  } else {
+    console.log("There is more files in google drive than in database");
+    // call a function to equilibrate records accordingly
+    for (let i = 0; i < filesNGd.length; i++) {
+      const missing = filesNDb.some((element) => element === filesNGd[i].id);
+
+      if (!missing) {
+        missingRecs.push(filesNGd[i]);
+      }
+    }
+  }
+  return missingRecs;
+}
 
 async function reconciliation(filesNDb, filesNGd) {
   const listToAdd = compare(filesNDb, filesNGd);
@@ -27,26 +48,14 @@ async function reconciliation(filesNDb, filesNGd) {
   }
 }
 
-function compare(filesNDb, filesNGd) {
-  const missingRecs = [];
+async function performReconciliation() {
+  const filesInGD = await getAllFilesInGD();
+  const filesInDB = await getUploadedDN();
 
-  if (filesNDb.length > filesNGd.length) {
-    console.log("There is more files in database than in google drive");
-    // call a function to equilibrate records accordingly
-  } else {
-    console.log("There is more files in google drive than in database");
-    // call a function to equilibrate records accordingly
-    for (let i = 0; i < filesNGd.length; i++) {
-      const missing = filesNDb.some((element) => element === filesNGd[i].id);
-
-      if (!missing) {
-        missingRecs.push(filesNGd[i]);
-      }
-    }
-  }
-  return missingRecs;
+  await reconciliation(filesInDB, filesInGD);
 }
 
 module.exports = {
   reconciliation,
+  performReconciliation,
 };

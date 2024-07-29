@@ -7,7 +7,7 @@ const {
   deleteFileInServer,
 } = require("../controller");
 const { getUploadedDN } = require("../model");
-const { reconciliation } = require("../utils/utils");
+const { reconciliation, performReconciliation } = require("../utils/utils");
 
 router.post("/notes", upload.any("files"), async (req, res) => {
   try {
@@ -22,6 +22,8 @@ router.post("/notes", upload.any("files"), async (req, res) => {
     if (!recordExist) {
       const response = await uploadDNmetada(req);
       res.json(response);
+
+      await performReconciliation()
     } else {
       res.json({ message: "Record Exists!!" });
       deleteFileInServer(req.files[0]);
