@@ -1,5 +1,4 @@
 const pool = require("../model/db");
-
 const multer = require("multer");
 const fs = require("fs");
 const csvParser = require("csv-parser");
@@ -18,8 +17,7 @@ const {
   saveDNToDB,
 } = require("../model/index");
 const path = require("path");
-const { resolveSoa } = require("dns");
-const { google } = require("googleapis");
+const { GoogleAuthorityCode } = require("../utils/google");
 
 /**
  *  AUTH: Render registration form
@@ -208,61 +206,7 @@ async function addNewOfferToDB(req, res) {
 /**************************************** */
 /**************************************** */
 /**************************************** */
-/********** SECTION 05 : START  ********* */
-
-const DriveAuth = () => {
-  const auth = new google.auth.GoogleAuth({
-    keyFile: `/etc/secrets/sensitiveinformation.json`,
-    scopes: "https://www.googleapis.com/auth/drive",
-  });
-  return auth;
-};
-
-const uploadToGoogleDrive = async (file) => {
-  const fileData = {};
-  // const auth = getAuth();
-  const driveService = google.drive({ version: "v3", auth: DriveAuth() });
-
-  const fileMetadata = {
-    name: file.originalname,
-    parents: [process.env.DN_FOLDER_IN_GDRV],
-  };
-
-  const media = {
-    mimeType: file.mimeType,
-    body: fs.createReadStream(file.path),
-  };
-
-  // Upload and return ID
-  const response = await driveService.files.create({
-    requestBody: fileMetadata,
-    media: media,
-    fields: "id",
-  });
-
-  // Populate fileData OBJ**********************
-  fileData.fileId = response.data.id;
-  fileData.filename = file.originalname;
-  fileData.uploaddate = new Date();
-
-  // Upload and return view and download link
-  const result = await driveService.files.get({
-    fileId: fileData.fileId,
-    fields: "webViewLink, webContentLink",
-  });
-
-  // Populate fileData OBJ**********************
-  fileData.downloadLink = result.data.webContentLink;
-  fileData.viewLink = result.data.webViewLink;
-
-  // console.log(fileData);
-
-  setTimeout(()=>{
-    deleteFileInServer(file)
-  }, 1000 * 60 * 0.5)
-
-  return fileData;
-};
+/********** SECTION 05 GOOGLE API: START  ********* */
 
 function deleteFileInServer(file) {
   const filename = file.originalname;
@@ -270,41 +214,28 @@ function deleteFileInServer(file) {
     if (err) console.log(err);
     console.log(`File with name ${filename} deleted.`);
   });
-};
+}
 
-const deleteFileInGDrive = async (id) => {
-  try {
-    const driveService = google.drive({ version: "v3", auth: DriveAuth() });
-    const response = await driveService.files.delete({
-      fileId: id,
-    });
-
-    console.log(response.data, response.status);
-  } catch (error) {
-    console.log(error.message);
-  }
+const deleteFileInGDrive = async (req) => {
+  const g = new GoogleAuthorityCode();
+  await g.deleteFileInGDrive(req.id);
 };
 
 const getAllFilesInGD = async () => {
-  try {
-    const driveService = google.drive({ version: "v3", auth: DriveAuth() });
-    const response = await driveService.files.list({
-      fields: "files(name, id, date)",
-    });
-
-    const files = response.data.files;
-    return files;
-  } catch (error) {
-    console.error("Error listing files: ", error.message);
-  }
+  const g = new GoogleAuthorityCode();
+  const files = await g.getAllFilesInGD();
+  return files;
 };
 
 //Upload function to DB
 const uploadDNmetada = async (req) => {
-  const googleDriveServices = await uploadToGoogleDrive(req.files[0]);
-  const saveToDB = await saveDNToDB(googleDriveServices);
+  const uploadToGoogleDrive = new GoogleAuthorityCode();
 
-  console.log(saveToDB.rows[0]);
+  const googleDriveServices = await uploadToGoogleDrive.getResultDataObject(
+    req.files[0]
+  );
+
+  const saveToDB = await saveDNToDB(googleDriveServices);
 
   return saveToDB.rows[0];
 };
@@ -329,8 +260,8 @@ module.exports = {
   getCurrentStockLogs,
   getOffers,
   addNewOfferToDB,
-  deleteFileInGDrive,
   deleteFileInServer,
   uploadDNmetada,
   getAllFilesInGD,
+  deleteFileInGDrive,
 };

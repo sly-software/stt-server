@@ -68,6 +68,7 @@ router.use("/newProducts", checkAuthenticated, stockedChemicals);
 router.use("/current", checkAuthenticated, offers);
 /********************************************** */
 router.use("/delivery", checkAuthenticated, DNservices);
+// router.use("/delivery", DNservices);
 /********************************************** */
 // Route for health check
 router.use("/health-check", (req, res) =>
